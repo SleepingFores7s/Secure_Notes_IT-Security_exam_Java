@@ -13,8 +13,6 @@ public class Main {
     void main() {
 
 
-        System.out.println(DBmethod.verifyUserLogin("Hanna123","123"));
-
         //Menu (Login/Register)
         do {
             System.out.print("""
@@ -39,6 +37,7 @@ public class Main {
 
     public void loginMenu() {
 
+        User loggedInUser;
         String username;
         String password;
 
@@ -51,25 +50,32 @@ public class Main {
             password = getPassword();
 
             //Calls DB to check if user exists
-            String userRole = DBmethod.verifyUserLogin(username, password);
+            loggedInUser = DBmethod.verifyUserLogin(username, password);
 
             //If there is no role, return. (Only User and Admin allowed!)
-            if (userRole.isEmpty()) {
-                return;
+            if (loggedInUser.getRole() != null) {
+                if (loggedInUser.getRole().equals("USER")) {
+
+
+                    System.out.println(loggedInUser.getRole() + " : " + loggedInUser.getUsername());
+
+                    new UserMenu().UserUI(loggedInUser);
+
+                } else if (loggedInUser.getRole().equals("ADMIN")) {
+                    // Call to admin menu UI
+                } else {
+                    return; //Role did not match any known variables
+                }
+            }else {
+                return; //Role was Null
             }
-
-            //Creates a user object
-            User loggedInUser = new User(username, userRole);
-
-            System.out.println(loggedInUser.getRole() +" : "+loggedInUser.getUsername());
-
-            //TODO - Create a if/switch for admin/user menu.
 
         }while (true);
     }
 
     public void registerMenu() {
 
+        User createdUser;
         String username;
         String password;
 
@@ -78,18 +84,18 @@ public class Main {
         username = getUsername();
         password = getPassword();
 
-        String role = new DatabaseMethods().registerNewUser(username, password);
 
-        if (role.equals("ERROR")) {
+        //TODO Fix method so it returns a user object instead with an ID
+        createdUser = new DatabaseMethods().registerNewUser(username, password);
+
+        if (createdUser.getRole() == null) {
             System.out.println("Something went wrong, try again.");
             return;
         }
 
-        User test1 = new User(username, role);
+        System.out.println(createdUser.getUsername());
 
-        System.out.println(test1);
-
-        //TODO - NOt sure, but something is missing.
+        //TODO - NOt sure, but something feels like it is missing.
 
     }
 
