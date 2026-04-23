@@ -54,17 +54,11 @@ public class Main {
 
             //If there is no role, return. (Only User and Admin allowed!)
             if (loggedInUser.getRole() != null) {
-                if (loggedInUser.getRole().equals("USER")) {
-
-
-                    System.out.println(loggedInUser.getRole() + " : " + loggedInUser.getUsername());
-
-                    new UserMenu().UserUI(loggedInUser);
-
-                } else if (loggedInUser.getRole().equals("ADMIN")) {
-                    // Call to admin menu UI
-                } else {
-                    return; //Role did not match any known variables
+                if (loggedInUser.getRole().equals("USER") || loggedInUser.getRole().equals("ADMIN")) {
+                    new LoggedInPanel().loggedInPanel(loggedInUser);
+                }else {
+                    System.out.println("Role did not match (USER / ADMIN)");
+                    return;
                 }
             }else {
                 return; //Role was Null
