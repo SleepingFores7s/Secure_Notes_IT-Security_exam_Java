@@ -41,6 +41,4 @@ public class Notes {
         return this.noteOwner;
     }
 
-    //TODO - Create method/methods for printing notes,
-    // NOT from a List, only single objects, loop can be in LoggedInPanel
 }

@@ -74,10 +74,6 @@ public class DatabaseMethods {
             System.out.println(statusMessage);
 
             return new User(username, role, userID);
-            /*TODO - Create a loginResult class for easier management of retuned values etc.'
-            *   Ex. loginResult(boolean success, String role, String DBMessage)
-            *   Ex. LoginResult(Boolean success, User userObject, String DBMessage)
-            * */
 
         } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
