@@ -18,14 +18,6 @@ public class LoggedInPanel {
 
     public void loggedInPanel(User currentUser) {
 
-        /*TODO
-         *  1. (DONE) Create DB method to GET User Notes OR admin notes (All notes).
-         *  2. (DONE) Make DB sp for storing notes again, overwriting the old one.
-         *  3. (DONE) Make DB SP to delete Notes.
-         *  4. (DONE) Make DB Method for replacing current password
-         *  5. (WiP) Make a DB method for users to create a NEW Note
-         * */
-
         switch (currentUser.getRole()) {
             case "USER":
                 userMenu(currentUser);
