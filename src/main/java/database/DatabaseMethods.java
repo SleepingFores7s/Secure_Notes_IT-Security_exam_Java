@@ -1,12 +1,17 @@
 package database;
 
+import com.mysql.cj.protocol.Resultset;
+import utilities.Notes;
 import utilities.User;
 
 import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DatabaseMethods {
 
@@ -37,9 +42,7 @@ public class DatabaseMethods {
 
             return new User(inputUsername, returnedRole, userID);
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
 
@@ -76,11 +79,163 @@ public class DatabaseMethods {
             *   Ex. LoginResult(Boolean success, User userObject, String DBMessage)
             * */
 
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        } catch (IOException e) {
+        } catch (SQLException | IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public List<Notes> getUserNotes(int id) {
+
+        try(Connection connection = DatabaseConnection.getConnection();
+        CallableStatement stmt = connection.prepareCall("{CALL GetNotesForUser(?)}")) {
+
+            stmt.setInt(1, id);
+
+            ResultSet rs = stmt.executeQuery();
+
+            List<Notes> retrivedNotes = new ArrayList<>();
+
+            while(rs.next()) {
+                Notes note = new Notes(
+                        rs.getInt("ID"),
+                        rs.getString("Title"),
+                        rs.getString("Stored_Data"),
+                        rs.getString("owner_name")//Note owner
+                );
+                retrivedNotes.add(note);
+            }
+
+            return retrivedNotes;
+
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<Notes> getAdminNotes() {
+        try(Connection connection = DatabaseConnection.getConnection();
+            CallableStatement stmt = connection.prepareCall("{CALL GetNotesForAdmin()}")) {
+
+            ResultSet rs = stmt.executeQuery();
+
+            List<Notes> retrivedNotes = new ArrayList<>();
+
+            while(rs.next()) {
+                Notes note = new Notes(
+                        rs.getInt("ID"),
+                        rs.getString("Title"),
+                        rs.getString("Stored_Data"),
+                        rs.getString("owner_name")//Note owner
+                );
+                retrivedNotes.add(note);
+            }
+
+            return retrivedNotes;
+
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void deleteNote(int userID, String userRole, int noteID) {
+        try(Connection connection = DatabaseConnection.getConnection();
+        CallableStatement stmt = connection.prepareCall("{CALL DeleteNote(?,?,?,?)}")) {
+
+            stmt.setInt(1, userID);
+            stmt.setString(2, userRole);
+            stmt.setInt(3, noteID);
+
+            stmt.registerOutParameter(4, Types.BOOLEAN); //Was_Deleted True/False
+
+            stmt.execute();
+
+            IO.println("--------------OUTCOME--------------");
+            if (stmt.getBoolean(4)) {
+                System.out.println("Deletion was successful.");
+            }else {
+                System.out.println("Something went wrong, try again.");
+            }
+            IO.println("--------------OUTCOME--------------");
+
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void changeUserPassword(String username, String newPassword) {
+
+        try(Connection connection = DatabaseConnection.getConnection();
+        CallableStatement stmt = connection.prepareCall("{CALL ChangePassword(?,?,?)}")) {
+
+            stmt.setString(1, username);
+            stmt.setString(2, newPassword);
+
+            stmt.registerOutParameter(3, Types.BOOLEAN);
+
+            stmt.execute();
+
+            if (stmt.getBoolean(3)) {
+                IO.println("Password change was successful.");
+            } else {
+                IO.println("Password change failed.");
+            }
+
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void createUserNote(int userID, String title, String body) {
+
+        try(Connection connection = DatabaseConnection.getConnection();
+        CallableStatement stmt = connection.prepareCall("{CALL CreateNewNote(?,?,?,?)}")) {
+
+            stmt.setInt(1, userID);
+            stmt.setString(2, title);
+            stmt.setString(3, body);
+
+            stmt.registerOutParameter(4, Types.BOOLEAN);
+
+            stmt.execute();
+
+            if (stmt.getBoolean(4)) {
+                IO.println("Note created successfully.");
+            }else {
+                IO.println("Note creating failed.");
+            }
+
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
+    public void updateUserNote(int userID, int noteID, String titleReplacer, String noteReplacer) {
+
+        try(Connection connection = DatabaseConnection.getConnection();
+        CallableStatement stmt = connection.prepareCall("{CALL EditNote(?,?,?,?,?)}")) {
+
+            stmt.setInt(1, userID);
+            stmt.setInt(2, noteID);
+            stmt.setString(3, titleReplacer);
+            stmt.setString(4, noteReplacer);
+
+            stmt.registerOutParameter(5, Types.BOOLEAN);
+
+            stmt.execute();
+
+            if (stmt.getBoolean(5)) {
+                IO.println("Note uploaded successfully.");
+            } else {
+                IO.println("Note upload failed.");
+            }
+
+        } catch (SQLException | IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
 }
