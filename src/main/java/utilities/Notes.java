@@ -1,5 +1,7 @@
 package utilities;
 
+import java.util.List;
+
 public class Notes {
 
     private int id;
@@ -15,25 +17,28 @@ public class Notes {
     }
 
     public int getId() {
-        return id;
+        return this.id;
     }
 
     public String getTitle() {
-        return title;
+        return this.title;
     }
     public void setTitle(String title) {
         this.title = title;
     }
 
     public String getNoteData() {
-        return noteData;
+        return this.noteData;
     }
     public void setNoteData(String noteData) {
         this.noteData = noteData;
     }
+    public void printNoteData() {
+        System.out.println(this.noteData);
+    }
 
     public String getNoteOwner() {
-        return noteOwner;
+        return this.noteOwner;
     }
 
     //TODO - Create method/methods for printing notes,
