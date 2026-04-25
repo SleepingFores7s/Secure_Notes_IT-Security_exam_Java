@@ -7,7 +7,6 @@ public class User {
     private String username;
     private String role;
     private int id;
-    private ArrayList<Notes> userNotes;
 
     public User(String username, String role, int id) {
         this.username = username;
@@ -27,10 +26,4 @@ public class User {
         return id;
     }
 
-    public ArrayList<Notes> getUserNotes() {
-        return userNotes;
-    }
-    public void setUserNotes(ArrayList<Notes> userNotes) {
-        this.userNotes = userNotes;
-    }
 }
