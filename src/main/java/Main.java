@@ -2,6 +2,7 @@ import database.DatabaseMethods;
 import utilities.User;
 import utilities.passwordHashing;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
@@ -9,29 +10,47 @@ public class Main {
     Scanner sc = new Scanner(System.in);
     passwordHashing hash = new passwordHashing();
     DatabaseMethods DBmethod = new DatabaseMethods();
+    int userChoice = -1;
 
     void main() {
 
 
         //Menu (Login/Register)
         do {
-            System.out.print("""
-                   1. Login
-                   2. Register new user
-                   \s
-                   Input:\s""");
 
-            int userChoice = sc.nextInt();
-            sc.nextLine();
 
-            switch(userChoice) {
-                case 1: loginMenu(); break;
-                case 2: registerMenu(); break;
+            while (true) {
+
+                System.out.print("""
+                    1. Login
+                    2. Register new user
+                    \s
+                    Input:\s"""
+                );
+
+                if(sc.hasNextInt()){
+                    userChoice = sc.nextInt();
+                    sc.nextLine();
+                    break;
+                }else {
+                    System.out.println("Invalid input, please enter a number.");
+                    sc.nextLine();
+                }
+            }
+
+
+            switch (userChoice) {
+                case 1:
+                    loginMenu();
+                    break;
+                case 2:
+                    registerMenu();
+                    break;
                 default:
                     System.out.println("Something went wrong, try again.");
             }
 
-        }while (true);
+        } while (true);
 
     }
 
@@ -42,7 +61,7 @@ public class Main {
         String password;
 
         //Menu (Login)
-        do{
+        do {
 
             System.out.println("Welcome, please put in credentials to login.");
 
@@ -56,15 +75,15 @@ public class Main {
             if (loggedInUser.getRole() != null) {
                 if (loggedInUser.getRole().equals("USER") || loggedInUser.getRole().equals("ADMIN")) {
                     new LoggedInPanel().loggedInPanel(loggedInUser);
-                }else {
+                } else {
                     System.out.println("Role did not match (USER / ADMIN)");
                     return;
                 }
-            }else {
+            } else {
                 return; //Role was Null
             }
 
-        }while (true);
+        } while (true);
     }
 
     public void registerMenu() {
@@ -78,8 +97,6 @@ public class Main {
         username = getUsername();
         password = getPassword();
 
-
-        //TODO Fix method so it returns a user object instead with an ID
         createdUser = new DatabaseMethods().registerNewUser(username, password);
 
         if (createdUser.getRole() == null) {
@@ -89,14 +106,13 @@ public class Main {
 
         System.out.println(createdUser.getUsername());
 
-        //TODO - NOt sure, but something feels like it is missing.
-
     }
 
     public String getUsername() {
         System.out.print("Username: ");
         return sc.nextLine();
     }
+
     public String getPassword() {
         System.out.print("Password: ");
         return hash.hashPassword(sc.nextLine());
