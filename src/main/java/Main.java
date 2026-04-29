@@ -2,7 +2,6 @@ import database.DatabaseMethods;
 import utilities.User;
 import utilities.passwordHashing;
 
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
