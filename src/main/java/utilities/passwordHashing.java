@@ -3,6 +3,9 @@ package utilities;
 public class passwordHashing {
 
     /*
+    !!!OBS!!!
+    Only for educational use, do not use this in real world projects, as it will not be safe!
+
     I have NOT made this algorithm.
     I have taken help of AI to try and understand the hashing process,
         instead of using a library to just implement one directly.
