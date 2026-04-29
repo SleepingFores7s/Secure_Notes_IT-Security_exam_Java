@@ -15,6 +15,7 @@ public class LoggedInPanel {
     boolean userMenuLoop = true;
     int menuChoice;
 
+    //TODO - Merge User & Admin methods together, because they are VERY similar.
 
     public void loggedInPanel(User currentUser) {
 
